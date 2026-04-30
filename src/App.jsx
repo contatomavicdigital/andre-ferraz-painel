@@ -251,11 +251,7 @@ function FormPage({ onAdd }) {
         <F k="pagamento" label="Forma de Pagamento" type="select" opts={["À vista","Parcelado","Recorrente","Boleto"]} />
         <F k="entrada" label="Entrada (R$)" type="number" placeholder="Opcional" />
       </Section>
-      <Section title="Follow-up & Qualificação">
-        <F k="followup" label="Leads em Follow-up" type="number" />
-        <F k="motivo" label="Motivo de Não Fechamento" type="select" opts={["sem dinheiro","sem limite","sem tempo","não respondeu","só curioso","outro"]} />
-        <F k="nivel" label="Nível do Lead" type="select" opts={["Frio","Morno","Quente"]} />
-      </Section>
+
       <Section title="Observações">
         <F k="obs" label="Observações" type="textarea" placeholder="Comentários adicionais..." full />
         <F k="insight" label="Insight do Dia" placeholder="Ex: Direct está convertendo melhor hoje" />
@@ -381,14 +377,7 @@ function ListPage({ data, onDelete, onEdit }) {
                         <div style={{ ...css.label, fontSize: 10 }}>Origem</div>
                         <div style={{ background: `${T.green}12`, color: T.green, padding: "3px 10px", borderRadius: 20, fontSize: 12, fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>{r.origin}</div>
                       </div>
-                      <div>
-                        <div style={{ ...css.label, fontSize: 10 }}>Tipo</div>
-                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: T.gray }}>{r.type}</div>
-                      </div>
-                      <div>
-                        <div style={{ ...css.label, fontSize: 10 }}>Nível</div>
-                        <div style={{ fontSize: 12, fontWeight: 700, color: nivelColor[r.nivel] || T.gray }}>{r.nivel}</div>
-                      </div>
+  
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                       <div style={{ textAlign: "right" }}>
