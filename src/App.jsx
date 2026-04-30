@@ -241,7 +241,7 @@ function FormPage({ onAdd }) {
       <Section title="Volume de Atividade">
         <F k="abordado" label="Qtd. Abordada" type="number" />
         <F k="respondeu" label="Qtd. Respondeu" type="number" />
-        <F k="qualificado" label="Conversas Qualificadas" type="number" />
+
         <F k="ofertas" label="Ofertas Enviadas" type="number" />
       </Section>
       <Section title="Resultado">
@@ -330,11 +330,10 @@ function ListPage({ data, onDelete, onEdit }) {
                     {[
                       { k:"date", label:"Data", type:"date" },
                       { k:"seller", label:"Vendedora" },
-                      { k:"origin", label:"Origem", type:"select", opts:["Direct","Novo Seguidor","ManyChat"] },
-                      { k:"type", label:"Tipo", type:"select", opts:["Ativa","Receptiva"] },
+
                       { k:"abordado", label:"Abordados", type:"number" },
                       { k:"respondeu", label:"Responderam", type:"number" },
-                      { k:"qualificado", label:"Qualificados", type:"number" },
+
                       { k:"ofertas", label:"Ofertas", type:"number" },
                       { k:"vendas", label:"Vendas", type:"number" },
                       { k:"valor", label:"Valor (R$)", type:"number" },
