@@ -125,12 +125,36 @@ const BLANK = {
   obs: "", insight: "",
 };
 
+const fieldStyle = { width: "100%", padding: "10px 14px", borderRadius: 10, border: `1.5px solid ${T.grayLight}`, background: T.white, fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: T.text, outline: "none", boxSizing: "border-box" };
+
+function FormSection({ title, children }) {
+  return (
+    <div style={{ ...css.card, marginBottom: 20 }}>
+      <div style={{ ...css.label, marginBottom: 18, color: T.green }}>{title}</div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: 16 }}>{children}</div>
+    </div>
+  );
+}
+
+function FormField({ value, onChange, label, type = "text", opts, placeholder, full }) {
+  return (
+    <div style={full ? { gridColumn: "1/-1" } : {}}>
+      <div style={{ ...css.label, marginBottom: 6 }}>{label}</div>
+      {type === "select" ? (
+        <select value={value} onChange={onChange} style={{ ...fieldStyle, cursor: "pointer" }}>{opts.map(o => <option key={o}>{o}</option>)}</select>
+      ) : type === "textarea" ? (
+        <textarea value={value} onChange={onChange} placeholder={placeholder} rows={3} style={{ ...fieldStyle, resize: "vertical" }} />
+      ) : (
+        <input type={type} value={value} onChange={onChange} placeholder={placeholder} style={fieldStyle} />
+      )}
+    </div>
+  );
+}
+
 function FormPage({ onAdd }) {
   const [f, setF] = useState(BLANK);
   const [saving, setSaving] = useState(false);
-  const set = k => e => setF({ ...f, [k]: e.target.value });
-
-  const fieldStyle = { width: "100%", padding: "10px 14px", borderRadius: 10, border: `1.5px solid ${T.grayLight}`, background: T.white, fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: T.text, outline: "none", boxSizing: "border-box" };
+  const set = k => e => setF(prev => ({ ...prev, [k]: e.target.value }));
 
   const handleSubmit = async () => {
     if (!f.seller || !f.date) return alert("Preencha ao menos Data e Social Seller.");
@@ -145,52 +169,32 @@ function FormPage({ onAdd }) {
     alert("Registro salvo com sucesso! ✦");
   };
 
-  const Section = ({ title, children }) => (
-    <div style={{ ...css.card, marginBottom: 20 }}>
-      <div style={{ ...css.label, marginBottom: 18, color: T.green }}>{title}</div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: 16 }}>{children}</div>
-    </div>
-  );
-
-  const F = ({ k, label, type = "text", opts, placeholder, full }) => (
-    <div style={full ? { gridColumn: "1/-1" } : {}}>
-      <div style={{ ...css.label, marginBottom: 6 }}>{label}</div>
-      {type === "select" ? (
-        <select value={f[k]} onChange={set(k)} style={{ ...fieldStyle, cursor: "pointer" }}>{opts.map(o => <option key={o}>{o}</option>)}</select>
-      ) : type === "textarea" ? (
-        <textarea value={f[k]} onChange={set(k)} placeholder={placeholder} rows={3} style={{ ...fieldStyle, resize: "vertical" }} />
-      ) : (
-        <input type={type} value={f[k]} onChange={set(k)} placeholder={placeholder} style={fieldStyle} />
-      )}
-    </div>
-  );
-
   return (
     <div style={{ maxWidth: 820, margin: "0 auto" }}>
       <div style={{ marginBottom: 32 }}>
         <h1 style={{ ...css.h1, fontSize: 32, margin: 0 }}>Registro Diário</h1>
         <p style={{ ...css.body, color: T.gray, marginTop: 6 }}>Preencha as atividades do dia em menos de 2 minutos</p>
       </div>
-      <Section title="Identificação">
-        <F k="date" label="Data" type="date" />
-        <F k="seller" label="Social Seller" placeholder="Nome completo" />
-      </Section>
-      <Section title="Volume de Atividade">
-        <F k="abordado" label="Qtd. Abordada" type="number" />
-        <F k="respondeu" label="Qtd. Respondeu" type="number" />
-        <F k="ofertas" label="Ofertas Enviadas" type="number" />
-      </Section>
-      <Section title="Resultado">
-        <F k="vendas" label="Vendas Realizadas" type="number" />
-        <F k="valor" label="Valor Total Vendido (R$)" type="number" />
-        <ProductSelector produtos={f.produtos} onChange={p => setF({ ...f, produtos: p })} />
-        <F k="pagamento" label="Forma de Pagamento" type="select" opts={["À vista","Parcelado","Recorrente","Boleto"]} />
-        <F k="entrada" label="Entrada (R$)" type="number" placeholder="Opcional" />
-      </Section>
-      <Section title="Observações">
-        <F k="obs" label="Observações" type="textarea" placeholder="Comentários adicionais..." full />
-        <F k="insight" label="Insight do Dia" placeholder="Ex: Direct está convertendo melhor hoje" />
-      </Section>
+      <FormSection title="Identificação">
+        <FormField label="Data" type="date" value={f.date} onChange={set("date")} />
+        <FormField label="Social Seller" value={f.seller} onChange={set("seller")} placeholder="Nome completo" />
+      </FormSection>
+      <FormSection title="Volume de Atividade">
+        <FormField label="Qtd. Abordada" type="number" value={f.abordado} onChange={set("abordado")} />
+        <FormField label="Qtd. Respondeu" type="number" value={f.respondeu} onChange={set("respondeu")} />
+        <FormField label="Ofertas Enviadas" type="number" value={f.ofertas} onChange={set("ofertas")} />
+      </FormSection>
+      <FormSection title="Resultado">
+        <FormField label="Vendas Realizadas" type="number" value={f.vendas} onChange={set("vendas")} />
+        <FormField label="Valor Total Vendido (R$)" type="number" value={f.valor} onChange={set("valor")} />
+        <ProductSelector produtos={f.produtos} onChange={p => setF(prev => ({ ...prev, produtos: p }))} />
+        <FormField label="Forma de Pagamento" type="select" value={f.pagamento} onChange={set("pagamento")} opts={["À vista","Parcelado","Recorrente","Boleto"]} />
+        <FormField label="Entrada (R$)" type="number" value={f.entrada} onChange={set("entrada")} placeholder="Opcional" />
+      </FormSection>
+      <FormSection title="Observações">
+        <FormField label="Observações" type="textarea" value={f.obs} onChange={set("obs")} placeholder="Comentários adicionais..." full />
+        <FormField label="Insight do Dia" value={f.insight} onChange={set("insight")} placeholder="Ex: Direct está convertendo melhor hoje" />
+      </FormSection>
       <button onClick={handleSubmit} disabled={saving} style={{ background: `linear-gradient(135deg, ${T.green}, ${T.greenLight})`, color: T.white, border: "none", borderRadius: 12, padding: "14px 40px", fontSize: 15, fontWeight: 600, fontFamily: "'DM Sans', sans-serif", cursor: saving ? "not-allowed" : "pointer", opacity: saving ? 0.7 : 1, marginBottom: 40 }}>
         {saving ? "Salvando..." : "Salvar Registro ✦"}
       </button>
